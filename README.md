@@ -1,58 +1,54 @@
-# dnsdist
+# Nginx modules
 
 ## Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with dnsdist](#setup)
+1. [Setup - The basics of getting started with nginx_modules](#setup)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with dnsdist](#beginning-with-dnsdist)
+    * [Beginning with nginx_modules](#beginning-with-nginx_modules)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Limitations - OS compatibility, etc.](#limitations)
 1. [Development - Guide for contributing to the module](#development)
 
 ## Description
 
-This module can be used to set up powerdns dnsdist servers. It supports acl's, actions, netmaskgroups and servers with various parameters.
+This module can be used to compile and install nginx modules from git sources.
 
 ## Setup
 
 ### Setup Requirements
 
-This module requires the `apt`, `concat` and `stdlib` modules.
+This module requires the `archive` and `vcsrepo` modules. You are responsible for installing required packages to build the modules.
 
-### Beginning with dnsdist
+### Beginning with nginx_modules
 
-To set up a dnsdist server in an empty state (listening on local IP ranges and not having any backend servers), simply use:
+To initialize the nginx source directory used to compile use the following class:
 ```
-class {'dnsdist' : }
+class {'nginx_modules' : 
+    nginx_version => '1.20.1',
+}
 
-dnsdist::instance{'dns-lb' }
 ```
 
 ## Usage
 
-### Simple setup with one rate-limited backend server
-Warning: the configuration below accepts queries from the internet.
+### Simple setup with the circle_gif module
 
 ```
-class {'dnsdist' : }
-
-dnsdist::instance{'dns-lb':
-    acl                  => ['0.0.0.0/0'],
-    additional_addresses => ['$::ipaddress']
+class {'nginx_modules' : 
+    nginx_version => '1.20.1',
 }
 
-dnsdist::server{'server-1':
-    cluster_name => 'cluster-1',
-    address      => '127.0.0.1:6500',
-    qps          => 100,
+nginx_modules::module{'ngx_http_modsecurity_module':
+    source     => 'https://github.com/evanmiller/nginx_circle_gif',
+    vcs_commit => '4631d75be7b5c46aef7fee2438eec84081bb406b',
 }
 ```
 
 
 ## Development
 
-Pull requests can be opened at the [Github Repository](https://github.com/Clonable/puppet-module-dnsdist).
+Pull requests can be opened at the [Github Repository](https://github.com/Clonable/puppet-module-nginx_modules).
 
 [1]: https://puppet.com/docs/pdk/latest/pdk_generating_modules.html
 [2]: https://puppet.com/docs/puppet/latest/puppet_strings.html

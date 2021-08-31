@@ -12,7 +12,7 @@ class nginx_modules::install inherits nginx_modules::params{
     ensure => 'directory'
   }
 
-  archive {"${build_path}}/nginx.tar.gz":
+  archive {"${build_path}/nginx.tar.gz":
     ensure       => present,
     source       => "https://nginx.org/download/nginx-${::nginx_modules::version}.tar.gz",
     extract_path => $build_path,

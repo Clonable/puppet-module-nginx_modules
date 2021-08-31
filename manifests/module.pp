@@ -12,6 +12,11 @@ define nginx_modules::module (
   $build_path = $::nginx_modules::install::build_path
   $nginx_src_path = $::nginx_modules::install::nginx_src_path
 
+  file { "${build_path}/${title}_canary":
+    ensure  => 'file',
+    content => $::nginx_modules::nginx_version
+  }
+
   vcsrepo {"${build_path}/${title}_src":
     ensure   => 'latest',
     force    => true,
@@ -27,7 +32,7 @@ define nginx_modules::module (
     path        => "${nginx_src_path}:${::nginx_modules::params::env_path}",
     require     => [Vcsrepo["${build_path}/${title}_src"]],
     refreshonly => true,
-    subscribe   => Vcsrepo["${build_path}/${title}_src"]
+    subscribe   => [File["${build_path}/${title}_canary"], Vcsrepo["${build_path}/${title}_src"]],
   }
 
   exec { "compile_${title}_module":

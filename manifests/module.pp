@@ -12,22 +12,22 @@ define nginx_modules::module (
   $build_path = $::nginx_modules::install::build_path
   $nginx_src_path = $::nginx_modules::install::nginx_src_path
 
-  vcsrepo {"${install::build_path}/${title}_src":
+  vcsrepo {"${build_path}/${title}_src":
     ensure   => 'latest',
     force    => true,
     provider => git,
     source   => $source,
     revision => $vcs_commit,
-    require  => Archive["${install::build_path}/nginx.tar.gz"],
+    require  => Archive["${build_path}/nginx.tar.gz"],
   }
 
   exec { "configure_${title}_module":
     command     => "./configure --with-compat --add-dynamic-module=../${title}_src",
     cwd         => $nginx_src_path,
     path        => "${nginx_src_path}:${::nginx_modules::params::path_env}",
-    require     => [Vcsrepo["${install::build_path}/${title}_src"]],
+    require     => [Vcsrepo["${build_path}/${title}_src"]],
     refreshonly => true,
-    subscribe   => Vcsrepo["${install::build_path}/${title}_src"]
+    subscribe   => Vcsrepo["${build_path}/${title}_src"]
   }
 
   exec { "compile_${title}_module":

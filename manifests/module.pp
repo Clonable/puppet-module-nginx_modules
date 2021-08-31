@@ -24,7 +24,7 @@ define nginx_modules::module (
   exec { "configure_${title}_module":
     command     => "./configure --with-compat --add-dynamic-module=../${title}_src",
     cwd         => $nginx_src_path,
-    path        => "${nginx_src_path}:${::nginx_modules::params::path_env}",
+    path        => "${nginx_src_path}:${::nginx_modules::params::env_path}",
     require     => [Vcsrepo["${build_path}/${title}_src"]],
     refreshonly => true,
     subscribe   => Vcsrepo["${build_path}/${title}_src"]
@@ -33,7 +33,7 @@ define nginx_modules::module (
   exec { "compile_${title}_module":
     command     => 'make modules',
     cwd         => $nginx_src_path,
-    path        => $::nginx_modules::params::path_env,
+    path        => $::nginx_modules::params::env_path,
     creates     => "${nginx_src_path}/objs/${title}.so",
     require     => Exec["configure_${title}_module"],
     refreshonly => true,

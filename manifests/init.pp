@@ -4,7 +4,4 @@ class nginx_modules (
   ) inherits nginx_modules::params {
 
   contain nginx_modules::install
-
-  Class['::nginx_modules::install']
-    ~> Class['::nginx_modules::module']
 }

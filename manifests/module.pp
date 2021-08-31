@@ -23,14 +23,17 @@ define nginx_modules::module (
     provider => git,
     source   => $source,
     revision => $vcs_commit,
-    require  => Archive["${build_path}/nginx.tar.gz"],
+    require  => Archive["${build_path}/nginx-${::nginx_modules::nginx_version}.tar.gz"],
   }
 
   exec { "configure_${title}_module":
     command     => "./configure --with-compat --add-dynamic-module=../${title}_src",
     cwd         => $nginx_src_path,
     path        => "${nginx_src_path}:${::nginx_modules::params::env_path}",
-    require     => [Vcsrepo["${build_path}/${title}_src"], Archive["${build_path}/nginx.tar.gz"]],
+    require     => [
+      Vcsrepo["${build_path}/${title}_src"],
+      Archive["${build_path}/nginx-${::nginx_modules::nginx_version}.tar.gz"],
+    ],
     refreshonly => true,
     subscribe   => [File["${build_path}/${title}_canary"], Vcsrepo["${build_path}/${title}_src"]],
   }

@@ -42,7 +42,6 @@ define nginx_modules::module (
     command     => 'make modules',
     cwd         => $nginx_src_path,
     path        => $::nginx_modules::params::env_path,
-    creates     => "${nginx_src_path}/objs/${title}.so",
     require     => Exec["configure_${title}_module"],
     refreshonly => true,
     subscribe   => Exec["configure_${title}_module"],

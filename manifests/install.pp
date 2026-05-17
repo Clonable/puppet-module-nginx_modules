@@ -17,5 +17,6 @@ class nginx_modules::install inherits nginx_modules::params{
     source       => "https://nginx.org/download/nginx-${::nginx_modules::nginx_version}.tar.gz",
     extract_path => $build_path,
     extract      => true,
+    cleanup      => false,
   }
 }
